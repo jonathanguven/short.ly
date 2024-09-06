@@ -26,8 +26,8 @@ func main() {
 	r.HandleFunc("/s/{alias}", handlers.HandleRedirect).Methods("GET")
 	r.HandleFunc("/login", handlers.HandleLogin)
 	r.HandleFunc("/create-account", handlers.HandleCreateUser)
-	r.HandleFunc("/list", handlers.HandleListURLs)
+	r.HandleFunc("/urls", handlers.HandleListURLs)
 
-	log.Println("Starting server on localhost:8080")
+	log.Println("Starting server on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

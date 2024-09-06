@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 	"shortly/internal/middlewares"
 	"shortly/internal/models"
 	"shortly/internal/utils"
@@ -63,8 +64,13 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	base := os.Getenv("BASE_URL")
+	if base == "" {
+		base = "http://" + r.Host
+	}
+
 	res := map[string]string{
-		"shortened_url": "http://localhost:8000/s/" + alias,
+		"shortened_url": base + "/s/" + alias,
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(res)
