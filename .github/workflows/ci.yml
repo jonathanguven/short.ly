@@ -60,7 +60,7 @@ jobs:
 
       - name: Build and Start Docker Compose Services
         run: |
-          docker-compose --env-file .env.development up --build
+          docker-compose up -d
         env:
           DB_HOST: ${{ env.DB_USER }}
           DB_USER: ${{ env.DB_USER }}
