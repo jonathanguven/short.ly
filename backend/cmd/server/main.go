@@ -14,8 +14,12 @@ import (
 )
 
 func main() {
+	// connect to database
 	database.InitializeDB()
 	database.DB.AutoMigrate(&models.URL{}, &models.User{})
+
+	// initialize cleanup cron job
+	database.StartCleanup(database.DB)
 
 	r := mux.NewRouter()
 
