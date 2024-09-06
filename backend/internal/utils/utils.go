@@ -2,8 +2,17 @@ package utils
 
 import (
 	"math/rand"
+	"shortly/internal/database"
+	"shortly/internal/models"
 	"time"
 )
+
+// returns all shortened URLs from the database
+func FindAllURLs() ([]models.URL, error) {
+	var urls []models.URL
+	result := database.DB.Find(&urls)
+	return urls, result.Error
+}
 
 // generate a random string of length 5
 func GenerateHash() string {

@@ -20,6 +20,7 @@ func main() {
 	http.HandleFunc("/", greet)
 	http.HandleFunc("/shorten", handlers.HandleShorten)
 	http.HandleFunc("/s/", handlers.HandleRedirect)
+	http.HandleFunc("/list", handlers.HandleListURLs)
 
 	log.Println("Starting server on localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

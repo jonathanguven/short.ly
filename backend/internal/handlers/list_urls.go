@@ -3,20 +3,12 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"shortly/internal/database"
-	"shortly/internal/models"
+	"shortly/internal/utils"
 )
-
-// returns all shortened URLs from the database
-func findAllURLs() ([]models.URL, error) {
-	var urls []models.URL
-	result := database.DB.Find(&urls)
-	return urls, result.Error
-}
 
 // return all created shortened URLs
 func HandleListURLs(w http.ResponseWriter, r *http.Request) {
-	urls, err := findAllURLs()
+	urls, err := utils.FindAllURLs()
 
 	if err != nil {
 		http.Error(w, "Failed to retrieve URLs", http.StatusInternalServerError)
