@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"shortly/internal/database"
 	"shortly/internal/handlers"
+	"shortly/internal/middlewares"
 	"shortly/internal/models"
 )
 
@@ -18,7 +19,7 @@ func main() {
 	database.DB.AutoMigrate(&models.URL{}, &models.User{})
 
 	http.HandleFunc("/", greet)
-	http.HandleFunc("/shorten", handlers.HandleShorten)
+	http.Handle("/shorten", middlewares.Authenticate(http.HandlerFunc(handlers.HandleShorten)))
 	http.HandleFunc("/s/", handlers.HandleRedirect)
 	http.HandleFunc("/list", handlers.HandleListURLs)
 
