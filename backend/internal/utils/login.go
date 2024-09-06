@@ -2,7 +2,6 @@ package utils
 
 import (
 	"net/http"
-	"shortly/internal/models"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -10,7 +9,7 @@ import (
 // validates user name and password and logs user in
 func Authenticate(w http.ResponseWriter, username, password string) error {
 	// get user from db using username
-	user, err := models.FindUserByUsername(username)
+	user, err := FindUserByUsername(username)
 	if err != nil {
 		return err
 	}

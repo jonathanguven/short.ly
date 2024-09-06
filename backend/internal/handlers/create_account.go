@@ -22,7 +22,7 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := models.FindUserByUsername(req.Username)
+	_, err := utils.FindUserByUsername(req.Username)
 	if err == nil {
 		http.Error(w, "Username already exists", http.StatusBadRequest)
 		return
@@ -41,7 +41,7 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 		PasswordHash: string(hashed),
 	}
 
-	if err := models.SaveUser(&user); err != nil {
+	if err := utils.SaveUser(&user); err != nil {
 		http.Error(w, "Failed to create user", http.StatusInternalServerError)
 		return
 	}

@@ -31,7 +31,7 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 	if alias == "" || userID == 0 {
 		alias = utils.GenerateHash()
 	} else {
-		if existingURL, _ := models.FindURL(alias); existingURL != nil {
+		if existingURL, _ := utils.FindURL(alias); existingURL != nil {
 			http.Error(w, "Alias already exists, please choose another one", http.StatusBadRequest)
 			return
 		}
@@ -46,7 +46,7 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// alias already exists in database
-	if existingURL, _ := models.FindURL(alias); existingURL != nil {
+	if existingURL, _ := utils.FindURL(alias); existingURL != nil {
 		http.Error(w, "Alias already exists, please choose another one", http.StatusBadRequest)
 		return
 	}
@@ -59,7 +59,7 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// save url to database
-	if err := models.SaveURL(&url); err != nil {
+	if err := utils.SaveURL(&url); err != nil {
 		http.Error(w, "Could not save the URL", http.StatusInternalServerError)
 		return
 	}
