@@ -1,19 +1,26 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"shortly/internal/database"
+	"shortly/internal/handlers"
 	"shortly/internal/models"
 )
+
+func greet(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Go URL shortener")
+}
 
 func main() {
 	database.InitializeDB()
 	database.DB.AutoMigrate(&models.URL{}, &models.User{})
 
-	// http.HandleFunc("/shorten", handleShorten)
-	// http.HandleFunc("/redirect/", handleRedirect)
+	http.HandleFunc("/", greet)
+	http.HandleFunc("/shorten", handlers.HandleShorten)
+	http.HandleFunc("/s/", handlers.HandleRedirect)
 
-	log.Println("Starting server on :8080")
+	log.Println("Starting server on localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

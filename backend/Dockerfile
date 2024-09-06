@@ -8,7 +8,9 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o shortly
+WORKDIR /backend/cmd/server
+
+RUN go build -o shortly .
 
 EXPOSE 8080
 

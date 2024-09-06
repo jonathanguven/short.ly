@@ -7,12 +7,12 @@ import (
 
 // URL struct for the database model
 type URL struct {
-	ID          uint   `gorm:"primaryKey"`
-	ShortID     string `gorm:"unique"`
-	OriginalURL string
-	CreatedAt   time.Time
-	ExpiresAt   *time.Time
-	UserID      uint
+	ID        uint   `gorm:"primaryKey"`
+	Alias     string `gorm:"unique"`
+	URL       string
+	CreatedAt time.Time
+	ExpiresAt *time.Time
+	UserID    uint
 }
 
 // SaveURL saves a new URL to the database
@@ -20,10 +20,10 @@ func SaveURL(url *URL) error {
 	return database.DB.Create(url).Error
 }
 
-// FindURLByShortID finds a URL by its short ID
-func FindURLByShortID(shortID string) (*URL, error) {
+// FindURL finds a URL by its alias
+func FindURL(alias string) (*URL, error) {
 	var url URL
-	result := database.DB.Where("short_id = ?", shortID).First(&url)
+	result := database.DB.Where("alias = ?", alias).First(&url)
 	if result.Error != nil {
 		return nil, result.Error
 	}
