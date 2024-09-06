@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"shortly/internal/middlewares"
 	"shortly/internal/models"
 	"shortly/internal/utils"
 	"time"
@@ -11,10 +12,12 @@ import (
 // process URL shortening requests
 func HandleShorten(w http.ResponseWriter, r *http.Request) {
 	var req struct {
-		URL       string `json:"url"`
-		Alias     string `json:"alias,omitempty"`
-		ExpiresAt int    `json:"expires_in,omitempty"`
+		URL   string `json:"url"`
+		Alias string `json:"alias,omitempty"`
 	}
+
+	// retrieve user ID from context
+	userID, _ := r.Context().Value(middlewares.UserIDKey{}).(uint)
 
 	// decode json request
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -24,20 +27,27 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 
 	// generate alias if alias not already provided
 	alias := req.Alias
-	if alias == "" {
+	if alias == "" || userID == 0 {
 		alias = utils.GenerateHash()
+	} else {
+		if existingURL, _ := models.FindURL(alias); existingURL != nil {
+			http.Error(w, "Alias already exists, please choose another one", http.StatusBadRequest)
+			return
+		}
+	}
+
+	var expiresAt *time.Time
+	if userID == 0 { // set a default expiration for guest user (7 days)
+		expiration := time.Now().Add(7 * 24 * time.Hour)
+		expiresAt = &expiration
+	} else { // logged in user is creating the shortened URL
+		expiresAt = nil
 	}
 
 	// alias already exists in database
 	if existingURL, _ := models.FindURL(alias); existingURL != nil {
 		http.Error(w, "Alias already exists, please choose another one", http.StatusBadRequest)
 		return
-	}
-
-	var expiresAt *time.Time
-	if req.ExpiresAt > 0 {
-		expiration := time.Now().Add(time.Duration(req.ExpiresAt) * 24 * time.Hour)
-		expiresAt = &expiration
 	}
 
 	url := models.URL{
