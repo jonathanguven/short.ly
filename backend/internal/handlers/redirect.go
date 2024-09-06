@@ -1,15 +1,21 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"shortly/internal/models"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 // process URL redirection requests
 func HandleRedirect(w http.ResponseWriter, r *http.Request) {
 	// extract the URL alias
-	alias := r.URL.Path[len("/redirect/"):]
+	vars := mux.Vars(r)
+	alias := vars["alias"]
+
+	log.Printf("Alias requested: %s", alias)
 
 	// find alias in DB
 	url, err := models.FindURL(alias)

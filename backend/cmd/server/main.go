@@ -9,23 +9,25 @@ import (
 
 	"shortly/internal/middlewares"
 	"shortly/internal/models"
-)
 
-func greet(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Go URL shortener")
-}
+	"github.com/gorilla/mux"
+)
 
 func main() {
 	database.InitializeDB()
 	database.DB.AutoMigrate(&models.URL{}, &models.User{})
 
-	http.HandleFunc("/", greet)
-	http.Handle("/shorten", middlewares.Authenticate(http.HandlerFunc(handlers.HandleShorten)))
-	http.HandleFunc("/s/", handlers.HandleRedirect)
-	http.HandleFunc("/login", handlers.HandleLogin)
-	http.HandleFunc("/create-account", handlers.HandleCreateUser)
-	http.HandleFunc("/list", handlers.HandleListURLs)
+	r := mux.NewRouter()
+
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Go URL shortener")
+	})
+	r.Handle("/shorten", middlewares.Authenticate(http.HandlerFunc(handlers.HandleShorten)))
+	r.HandleFunc("/s/{alias}", handlers.HandleRedirect).Methods("GET")
+	r.HandleFunc("/login", handlers.HandleLogin)
+	r.HandleFunc("/create-account", handlers.HandleCreateUser)
+	r.HandleFunc("/list", handlers.HandleListURLs)
 
 	log.Println("Starting server on localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
