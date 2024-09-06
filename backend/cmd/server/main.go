@@ -23,6 +23,8 @@ func main() {
 	http.HandleFunc("/shorten", handlers.HandleShorten)
 	// http.Handle("/shorten", middlewares.Authenticate(http.HandlerFunc(handlers.HandleShorten)))
 	http.HandleFunc("/s/", handlers.HandleRedirect)
+	http.HandleFunc("/login", handlers.HandleLogin)
+	http.HandleFunc("/create-account", handlers.HandleCreateUser)
 	http.HandleFunc("/list", handlers.HandleListURLs)
 
 	log.Println("Starting server on localhost:8080")
