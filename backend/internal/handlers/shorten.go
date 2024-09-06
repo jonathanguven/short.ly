@@ -2,9 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"os"
 	"shortly/internal/middlewares"
 	"shortly/internal/models"
 	"shortly/internal/utils"
@@ -20,7 +18,7 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 
 	// retrieve user ID from context
 	userID, _ := r.Context().Value(middlewares.UserIDKey{}).(uint)
-	fmt.Fprintf(os.Stdout, "User ID: %d\n", userID)
+
 	// decode json request
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
