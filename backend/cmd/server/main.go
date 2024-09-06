@@ -21,12 +21,12 @@ func main() {
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Go URL shortener")
-	})
-	r.Handle("/shorten", middlewares.Authenticate(http.HandlerFunc(handlers.HandleShorten)))
+	}).Methods("GET")
+	r.Handle("/shorten", middlewares.Authenticate(http.HandlerFunc(handlers.HandleShorten))).Methods("POST")
 	r.HandleFunc("/s/{alias}", handlers.HandleRedirect).Methods("GET")
-	r.HandleFunc("/login", handlers.HandleLogin)
-	r.HandleFunc("/create-account", handlers.HandleCreateUser)
-	r.HandleFunc("/urls", handlers.HandleListURLs)
+	r.HandleFunc("/login", handlers.HandleLogin).Methods("POST")
+	r.HandleFunc("/create-account", handlers.HandleCreateUser).Methods("POST")
+	r.HandleFunc("/urls", handlers.HandleListURLs).Methods("GET")
 
 	log.Println("Starting server on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
