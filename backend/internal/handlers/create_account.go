@@ -3,8 +3,10 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"shortly/internal/metrics"
 	"shortly/internal/models"
 	"shortly/internal/utils"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
@@ -12,6 +14,10 @@ import (
 
 // creates new user then logs them in
 func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
+	start := time.Now()
+
+	metrics.TotalRequests.WithLabelValues(r.Method, r.URL.Path).Inc()
+
 	var req struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
@@ -30,6 +36,7 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 			"remote":  r.RemoteAddr,
 			"payload": req,
 		}).Warn("Invalid input for create user")
+		metrics.TotalErrors.WithLabelValues(r.Method, r.URL.Path, http.StatusText(http.StatusBadRequest)).Inc()
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 		return
 	}
@@ -51,6 +58,7 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 			"error":    err.Error(),
 			"username": req.Username,
 		}).Error("Failed to hash password")
+		metrics.TotalErrors.WithLabelValues(r.Method, r.URL.Path, "PasswordHashFailed").Inc()
 		http.Error(w, "Failed to hash password", http.StatusInternalServerError)
 		return
 	}
@@ -66,6 +74,7 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 			"username": req.Username,
 			"error":    err.Error(),
 		}).Error("Failed to save user in the database")
+		metrics.TotalErrors.WithLabelValues(r.Method, r.URL.Path, "DatabaseSaveFailed").Inc()
 		http.Error(w, "Failed to create user", http.StatusInternalServerError)
 		return
 	}
@@ -80,6 +89,7 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 			"username": req.Username,
 			"error":    err.Error(),
 		}).Error("Failed to log user in after account creation")
+		metrics.TotalErrors.WithLabelValues(r.Method, r.URL.Path, "LoginFailedAfterCreation").Inc()
 		http.Error(w, "Failed to log in after account creation", http.StatusInternalServerError)
 		return
 	}
@@ -87,6 +97,8 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 	log.WithFields(log.Fields{
 		"username": user.Username,
 	}).Info("User logged in successfully after account creation")
+
+	metrics.RequestDuration.WithLabelValues(r.Method, r.URL.Path).Observe(time.Since(start).Seconds())
 
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("Account created and logged in successfully"))
