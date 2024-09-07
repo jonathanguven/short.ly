@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 	"shortly/internal/database"
 	"shortly/internal/handlers"
 
@@ -13,6 +14,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/rs/cors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -30,17 +32,27 @@ func main() {
 	// initialize cleanup cron job
 	database.StartCleanup(database.DB)
 
+	frontendURL := os.Getenv("FRONTEND_URL")
+	log.Infof("Frontend URL: %s", frontendURL)
+	frontendURLProd := os.Getenv("FRONTEND_URL_PRODUCTION")
+
 	r := mux.NewRouter()
 
 	r.Handle("/shorten", middlewares.Authenticate(http.HandlerFunc(handlers.HandleShorten))).Methods("POST")
 	r.Handle("/urls/{alias}", middlewares.Authenticate(http.HandlerFunc(handlers.HandleUpdateURL))).Methods("PUT")
 	r.Handle("/urls/{alias}", middlewares.Authenticate(http.HandlerFunc(handlers.HandleDeleteURL))).Methods("DELETE")
-	r.HandleFunc("/s/{alias}", handlers.HandleRedirect).Methods("GET")
 	r.HandleFunc("/login", handlers.HandleLogin).Methods("POST")
 	r.HandleFunc("/create-account", handlers.HandleCreateUser).Methods("POST")
 	r.Handle("/urls", middlewares.Authenticate(http.HandlerFunc(handlers.HandleListURLs))).Methods("GET")
 	r.Handle("/metrics", promhttp.Handler())
 
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins:   []string{frontendURL, frontendURLProd},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
+		AllowedHeaders:   []string{"Authorization", "Content-Type"},
+		AllowCredentials: true,
+	}).Handler(r)
+
 	log.Info("Starting server on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":8080", corsHandler))
 }
