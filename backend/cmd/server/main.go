@@ -8,15 +8,20 @@ import (
 	"shortly/internal/middlewares"
 	"shortly/internal/models"
 
+	"shortly/internal/metrics"
 	"shortly/internal/utils"
 
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 )
 
 func main() {
 	// set up logger
 	utils.InitLogger()
+
+	// set up prometheus client
+	metrics.Init()
 
 	// connect to database
 	database.InitializeDB()
@@ -32,6 +37,7 @@ func main() {
 	r.HandleFunc("/login", handlers.HandleLogin).Methods("POST")
 	r.HandleFunc("/create-account", handlers.HandleCreateUser).Methods("POST")
 	r.HandleFunc("/urls", handlers.HandleListURLs).Methods("GET")
+	r.Handle("/metrics", promhttp.Handler())
 
 	log.Info("Starting server on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
