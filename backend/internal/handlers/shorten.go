@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
+	"shortly/internal/metrics"
 	"shortly/internal/middlewares"
 	"shortly/internal/models"
 	"shortly/internal/utils"
@@ -14,6 +15,10 @@ import (
 
 // process URL shortening requests
 func HandleShorten(w http.ResponseWriter, r *http.Request) {
+	start := time.Now()
+
+	metrics.TotalRequests.WithLabelValues(r.Method, r.URL.Path).Inc()
+
 	var req struct {
 		URL   string `json:"url"`
 		Alias string `json:"alias,omitempty"`
@@ -63,17 +68,6 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 		expiresAt = nil
 	}
 
-	// alias already exists in database
-	if existingURL, _ := utils.FindURL(alias); existingURL != nil {
-		log.WithFields(log.Fields{
-			"alias":  alias,
-			"userID": userID,
-			"remote": r.RemoteAddr,
-		}).Warn("Alias already exists in database")
-		http.Error(w, "Alias already exists, please choose another one", http.StatusBadRequest)
-		return
-	}
-
 	url := models.URL{
 		Alias:     alias,
 		URL:       req.URL,
@@ -90,6 +84,7 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 			"remote": r.RemoteAddr,
 		}).Error("Failed to save URL to the database")
 		http.Error(w, "Could not save the URL", http.StatusInternalServerError)
+		metrics.TotalErrors.WithLabelValues(r.Method, r.URL.Path, http.StatusText(http.StatusInternalServerError)).Inc()
 		return
 	}
 
@@ -100,16 +95,19 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 
 	shortened := base + "/s/" + alias
 
+	res := map[string]string{
+		"shortened_url": shortened,
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(res)
+
+	metrics.RequestDuration.WithLabelValues(r.Method, r.URL.Path).Observe(time.Since(start).Seconds())
+
 	log.WithFields(log.Fields{
 		"shortened_url": shortened,
 		"alias":         alias,
 		"userID":        userID,
 		"remote":        r.RemoteAddr,
 	}).Info("URL shortened successfully")
-
-	res := map[string]string{
-		"shortened_url": shortened,
-	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(res)
 }

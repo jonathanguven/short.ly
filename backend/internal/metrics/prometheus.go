@@ -20,6 +20,13 @@ var (
 		},
 		[]string{"method", "path"},
 	)
+	TotalErrors = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "http_errors_total",
+			Help: "Number of HTTP errors processed, labeled by method, path, and status code.",
+		},
+		[]string{"method", "path", "status"},
+	)
 )
 
 func Init() {
