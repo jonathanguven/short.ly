@@ -14,4 +14,4 @@ RUN go build -o shortly .
 
 EXPOSE 8080
 
-CMD ["./shortly"]
+CMD ["/backend/cmd/server/shortly"]
