@@ -19,3 +19,9 @@ func FindUserByUsername(username string) (*models.User, error) {
 	}
 	return &user, nil
 }
+
+func FindURLsByUser(userID uint) ([]models.URL, error) {
+	var urls []models.URL
+	result := database.DB.Where("user_id = ?", userID).Find(&urls)
+	return urls, result.Error
+}

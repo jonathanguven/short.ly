@@ -38,7 +38,7 @@ func main() {
 	r.HandleFunc("/s/{alias}", handlers.HandleRedirect).Methods("GET")
 	r.HandleFunc("/login", handlers.HandleLogin).Methods("POST")
 	r.HandleFunc("/create-account", handlers.HandleCreateUser).Methods("POST")
-	r.HandleFunc("/urls", handlers.HandleListURLs).Methods("GET")
+	r.Handle("/urls", middlewares.Authenticate(http.HandlerFunc(handlers.HandleListURLs))).Methods("GET")
 	r.Handle("/metrics", promhttp.Handler())
 
 	log.Info("Starting server on port 8080")
