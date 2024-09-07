@@ -7,7 +7,7 @@ import (
 
 // SaveURL saves a new URL to the database
 func SaveURL(url *models.URL) error {
-	return database.DB.Create(url).Error
+	return database.DB.Save(url).Error
 }
 
 // FindURL finds a URL by its alias

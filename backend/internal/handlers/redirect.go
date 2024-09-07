@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"shortly/internal/metrics"
 	"shortly/internal/utils"
 	"time"
 
@@ -11,6 +12,10 @@ import (
 
 // process URL redirection requests
 func HandleRedirect(w http.ResponseWriter, r *http.Request) {
+	start := time.Now()
+
+	metrics.TotalRequests.WithLabelValues(r.Method, r.URL.Path).Inc()
+
 	// extract the URL alias
 	vars := mux.Vars(r)
 	alias := vars["alias"]
@@ -30,6 +35,20 @@ func HandleRedirect(w http.ResponseWriter, r *http.Request) {
 			"remote": r.RemoteAddr,
 		}).Warn("URL expired or not found")
 		http.Error(w, "URL expired or not found", http.StatusNotFound)
+		metrics.TotalErrors.WithLabelValues(r.Method, r.URL.Path, http.StatusText(http.StatusNotFound)).Inc()
+		return
+	}
+
+	// increment click count
+	url.ClickCount++
+	if err := utils.SaveURL(url); err != nil {
+		log.WithFields(log.Fields{
+			"alias":  alias,
+			"remote": r.RemoteAddr,
+			"error":  err.Error(),
+		}).Error("Failed to update click count")
+		http.Error(w, "Failed to update click count", http.StatusInternalServerError)
+		metrics.TotalErrors.WithLabelValues(r.Method, r.URL.Path, http.StatusText(http.StatusInternalServerError)).Inc()
 		return
 	}
 
@@ -41,4 +60,6 @@ func HandleRedirect(w http.ResponseWriter, r *http.Request) {
 
 	// redirect to original URL
 	http.Redirect(w, r, url.URL, http.StatusFound)
+
+	metrics.RequestDuration.WithLabelValues(r.Method, r.URL.Path).Observe(time.Since(start).Seconds())
 }
