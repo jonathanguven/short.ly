@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Shrink - URL Shortener
 
-## Getting Started
+Shortly is a simple, yet powerful URL shortening service built with **Next.js**, **Golang**, and **PostgreSQL**. It allows users to create shortened URLs that redirect to longer, original URLs. Users can manage their URLs, view analytics, and more.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **URL Shortening**: Create short URLs for any original long URLs.
+- **Custom Aliases**: Logged-in users can create custom aliases for their shortened URLs.
+- **URL Redirection**: When a user accesses the short URL, they are automatically redirected to the original URL.
+- **URL Management**: Logged-in users can modify/delete their previously created shortened URLs.
+- **Analytics**: Logged-in users can view how many times a shortened URL has been clicked.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Frontend**: Next.js, Shadcn
+- **Backend**: Golang
+- **Database**: PostgreSQL
+- **Monitoring**: Prometheus & Grafana
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## How it Works
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **URL Shortening**:
+   - Users can submit a long URL and receive a shortened version.
+   - Guest users' URLs expire after 7 days, while registered users' URLs don't expire and can be managed.
+2. **Redirection**:
+   - When a user visits the shortened URL, the system retrieves the original URL from the database and redirects the user to it.
+3. **Analytics**:
+   - Each time a shortened URL is accessed, the click count is incremented, and this data can be viewed by the URL's creator.
