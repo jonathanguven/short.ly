@@ -73,6 +73,7 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 		URL:       req.URL,
 		CreatedAt: time.Now(),
 		ExpiresAt: expiresAt,
+		UserID:    userID,
 	}
 
 	// save url to database
