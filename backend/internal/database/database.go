@@ -1,8 +1,9 @@
 package database
 
 import (
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -23,5 +24,5 @@ func InitializeDB() {
 	if err != nil {
 		log.Fatal("Failed to connect to the database: ", err)
 	}
-
+	log.Println("Initialized Database")
 }

@@ -1,10 +1,10 @@
 package database
 
 import (
-	"log"
 	"shortly/internal/models"
 	"time"
 
+	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -13,7 +13,7 @@ func StartCleanup(db *gorm.DB) {
 	ticker := time.NewTicker(24 * time.Hour)
 	go func() {
 		for range ticker.C {
-			log.Println("Cleaning up expired URLs...")
+			log.Println("Starting cleanup task...")
 			cleanupExpiredURLs(db)
 		}
 	}()
@@ -33,4 +33,5 @@ func cleanupExpiredURLs(db *gorm.DB) {
 	} else {
 		log.Printf("No expired URLs found for cleanup\n")
 	}
+	log.Println("Cleanup task completed")
 }

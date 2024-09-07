@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"shortly/internal/database"
 	"shortly/internal/handlers"
@@ -10,10 +9,16 @@ import (
 	"shortly/internal/middlewares"
 	"shortly/internal/models"
 
+	"shortly/internal/utils"
+
 	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
+	// set up logger
+	utils.InitLogger()
+
 	// connect to database
 	database.InitializeDB()
 	database.DB.AutoMigrate(&models.URL{}, &models.User{})
@@ -32,6 +37,6 @@ func main() {
 	r.HandleFunc("/create-account", handlers.HandleCreateUser).Methods("POST")
 	r.HandleFunc("/urls", handlers.HandleListURLs).Methods("GET")
 
-	log.Println("Starting server on port 8080")
+	log.Info("Starting server on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

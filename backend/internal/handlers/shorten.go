@@ -8,6 +8,8 @@ import (
 	"shortly/internal/models"
 	"shortly/internal/utils"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // process URL shortening requests
@@ -20,8 +22,19 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 	// retrieve user ID from context
 	userID, _ := r.Context().Value(middlewares.UserIDKey{}).(uint)
 
+	log.WithFields(log.Fields{
+		"method": r.Method,
+		"url":    r.URL.Path,
+		"userID": userID,
+		"remote": r.RemoteAddr,
+	}).Info("URL shortening request received")
+
 	// decode json request
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		log.WithFields(log.Fields{
+			"error":  err.Error(),
+			"remote": r.RemoteAddr,
+		}).Warn("Invalid input for URL shortening")
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 		return
 	}
@@ -32,6 +45,11 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 		alias = utils.GenerateHash()
 	} else {
 		if existingURL, _ := utils.FindURL(alias); existingURL != nil {
+			log.WithFields(log.Fields{
+				"alias":  alias,
+				"userID": userID,
+				"remote": r.RemoteAddr,
+			}).Warn("Alias already exists")
 			http.Error(w, "Alias already exists, please choose another one", http.StatusBadRequest)
 			return
 		}
@@ -47,6 +65,11 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 
 	// alias already exists in database
 	if existingURL, _ := utils.FindURL(alias); existingURL != nil {
+		log.WithFields(log.Fields{
+			"alias":  alias,
+			"userID": userID,
+			"remote": r.RemoteAddr,
+		}).Warn("Alias already exists in database")
 		http.Error(w, "Alias already exists, please choose another one", http.StatusBadRequest)
 		return
 	}
@@ -60,6 +83,12 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 
 	// save url to database
 	if err := utils.SaveURL(&url); err != nil {
+		log.WithFields(log.Fields{
+			"alias":  alias,
+			"userID": userID,
+			"error":  err.Error(),
+			"remote": r.RemoteAddr,
+		}).Error("Failed to save URL to the database")
 		http.Error(w, "Could not save the URL", http.StatusInternalServerError)
 		return
 	}
@@ -69,8 +98,17 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 		base = "http://" + r.Host
 	}
 
+	shortened := base + "/s/" + alias
+
+	log.WithFields(log.Fields{
+		"shortened_url": shortened,
+		"alias":         alias,
+		"userID":        userID,
+		"remote":        r.RemoteAddr,
+	}).Info("URL shortened successfully")
+
 	res := map[string]string{
-		"shortened_url": base + "/s/" + alias,
+		"shortened_url": shortened,
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(res)
