@@ -21,25 +21,10 @@ services:
     depends_on:
       - database
     environment:
-      DB_HOST: ${DB_HOST}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
-      DB_PORT: ${DB_PORT}
+      DB_URL: ${DB_URL}
       BASE_URL: ${BASE_URL}
       DOMAIN: ${DOMAIN}
     command: ["./shortly"]
-
-  pgadmin:
-    image: dpage/pgadmin4
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com 
-      PGADMIN_DEFAULT_PASSWORD: admin       
-    ports:
-      - "5050:80"
-    depends_on:
-      - database
 
 volumes:
   db-data:
