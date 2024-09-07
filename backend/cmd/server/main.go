@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"shortly/internal/database"
 	"shortly/internal/handlers"
@@ -28,9 +27,6 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Go URL shortener")
-	}).Methods("GET")
 	r.Handle("/shorten", middlewares.Authenticate(http.HandlerFunc(handlers.HandleShorten))).Methods("POST")
 	r.HandleFunc("/s/{alias}", handlers.HandleRedirect).Methods("GET")
 	r.HandleFunc("/login", handlers.HandleLogin).Methods("POST")
