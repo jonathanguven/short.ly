@@ -58,7 +58,7 @@ func HandleRedirect(w http.ResponseWriter, r *http.Request) {
 		"remote": r.RemoteAddr,
 	}).Info("Redirecting to original URL")
 
-	// redirect to original URL
+	// redirect to the original URL
 	http.Redirect(w, r, url.URL, http.StatusFound)
 
 	metrics.RequestDuration.WithLabelValues(r.Method, r.URL.Path).Observe(time.Since(start).Seconds())

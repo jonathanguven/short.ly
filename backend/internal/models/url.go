@@ -8,6 +8,7 @@ import (
 type URL struct {
 	ID         uint   `gorm:"primaryKey"`
 	Alias      string `gorm:"unique"`
+	Link       string `gorm:"not null"`
 	URL        string
 	CreatedAt  time.Time
 	ExpiresAt  *time.Time
