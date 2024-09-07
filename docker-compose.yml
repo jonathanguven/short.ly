@@ -27,7 +27,12 @@ services:
       DB_NAME: ${DB_NAME}
       DB_PORT: ${DB_PORT}
       BASE_URL: ${BASE_URL}
+<<<<<<< HEAD
       DOMAIN: ${DOMAIN}
+=======
+      FRONTEND_URL: ${FRONTEND_URL}
+      FRONTEND_URL_PRODUCTION: ${FRONTEND_URL_PRODUCTION}
+>>>>>>> eeb58c1db84e019876d3810fc06ef77d782b9fe2
     command: ["./shortly"]
 
   pgadmin:
