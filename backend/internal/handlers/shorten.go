@@ -68,9 +68,17 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 		expiresAt = nil
 	}
 
+	domain := os.Getenv("DOMAIN")
+	if domain == "" {
+		domain = "http://" + r.Host
+	}
+
+	link := domain + "/s/" + alias
+
 	url := models.URL{
 		Alias:     alias,
 		URL:       req.URL,
+		Link:      link,
 		CreatedAt: time.Now(),
 		ExpiresAt: expiresAt,
 		UserID:    userID,

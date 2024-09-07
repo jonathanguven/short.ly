@@ -27,6 +27,7 @@ services:
       DB_NAME: ${DB_NAME}
       DB_PORT: ${DB_PORT}
       BASE_URL: ${BASE_URL}
+      DOMAIN: ${DOMAIN}
     command: ["./shortly"]
 
   pgadmin:
