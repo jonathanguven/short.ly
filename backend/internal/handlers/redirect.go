@@ -41,7 +41,7 @@ func HandleRedirect(w http.ResponseWriter, r *http.Request) {
 
 	// increment click count
 	url.ClickCount++
-	if err := utils.SaveURL(url); err != nil {
+	if err := utils.UpdateClickCount(url.ID, url.ClickCount); err != nil {
 		log.WithFields(log.Fields{
 			"alias":  alias,
 			"remote": r.RemoteAddr,

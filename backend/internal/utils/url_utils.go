@@ -19,3 +19,8 @@ func FindURL(alias string) (*models.URL, error) {
 	}
 	return &url, nil
 }
+
+// only update the click count column
+func UpdateClickCount(id uint, clickCount int) error {
+	return database.DB.Model(&models.URL{}).Where("id = ?", id).Update("click_count", clickCount).Error
+}
