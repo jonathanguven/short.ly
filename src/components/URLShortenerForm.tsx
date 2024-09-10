@@ -24,7 +24,7 @@ export default function URLShortenerForm() {
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button variant="outline">Clear</Button>
-          <Button>Shorten URL</Button>
+          <Button>Shrink</Button>
         </CardFooter>
       </Card>
       <Textarea 
