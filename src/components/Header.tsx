@@ -9,12 +9,12 @@ export const Header = () => {
           <nav>
             <ul className="flex space-x-4">
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+                <a href="/" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
                   Home
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+                <a href="/about" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
                   About
                 </a>
               </li>
