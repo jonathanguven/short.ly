@@ -68,17 +68,17 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 		expiresAt = nil
 	}
 
-	domain := os.Getenv("DOMAIN")
-	if domain == "" {
-		domain = "http://" + r.Host
+	base := os.Getenv("BASE_URL")
+	if base == "" {
+		base = "http://" + r.Host
 	}
 
-	link := domain + "/s/" + alias
+	shortened := base + "/s/" + alias
 
 	url := models.URL{
 		Alias:     alias,
 		URL:       req.URL,
-		Link:      link,
+		Link:      shortened,
 		CreatedAt: time.Now(),
 		ExpiresAt: expiresAt,
 		UserID:    userID,
@@ -96,13 +96,6 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 		metrics.TotalErrors.WithLabelValues(r.Method, r.URL.Path, http.StatusText(http.StatusInternalServerError)).Inc()
 		return
 	}
-
-	base := os.Getenv("BASE_URL")
-	if base == "" {
-		base = "http://" + r.Host
-	}
-
-	shortened := base + "/s/" + alias
 
 	res := map[string]string{
 		"shortened_url": shortened,
