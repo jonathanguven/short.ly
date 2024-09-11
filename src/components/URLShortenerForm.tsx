@@ -33,6 +33,7 @@ export default function URLShortenerForm() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ URL, alias }),
       });
   
@@ -76,13 +77,14 @@ export default function URLShortenerForm() {
       <Card>
         <CardHeader>
           <CardTitle>Shrink</CardTitle>
-          <CardDescription>Enter a long URL to get a short, shareable link.</CardDescription>
+          <CardDescription className="text-md">Enter a long URL to get a short, shareable link.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="url">URL</Label>
             <Input 
               id="url" 
+              className="text-md"
               value={URL}
               placeholder="https://example.com/very/long/url"
               onChange={(e) => setURL(e.target.value)}
@@ -95,6 +97,7 @@ export default function URLShortenerForm() {
               {...!isAuthenticated && { disabled: true }}
               placeholder={isAuthenticated ? 'Enter a custom alias (optional)' : 'Enter a custom alias (must be logged in)'}
               value={alias} 
+              className="text-md"
               onChange={(e) => setAlias(e.target.value)} 
             />
           </div>

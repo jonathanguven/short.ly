@@ -1,6 +1,10 @@
+'use client';
 
+import { useAuth } from "@/hooks/useAuth";
 
 export const Header = () => {
+  const { isAuthenticated, user } = useAuth();
+
   return (
     <header className="bg-white dark:bg-gray-800 shadow">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -14,9 +18,18 @@ export const Header = () => {
                 </a>
               </li>
               <li>
-                <a href="/login" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                  Login
-                </a>
+                {(!isAuthenticated) ? (
+                  <a href="/login" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+                    Login
+                  </a>
+                ) : (
+                  <a
+                    href={`/urls/${user}`}
+                    className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                  >
+                    My URLs
+                  </a>
+                )}
               </li>
             </ul>
           </nav>

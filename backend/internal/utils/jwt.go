@@ -11,10 +11,11 @@ import (
 var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 
 // generate JWT token for user given their user ID
-func GenerateJWT(userID uint) (string, error) {
+func GenerateJWT(userID uint, username string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user_id": userID,
-		"exp":     time.Now().Add(time.Hour * 24 * 7).Unix(),
+		"user_id":  userID,
+		"username": username,
+		"exp":      time.Now().Add(time.Hour * 24 * 7).Unix(),
 	})
 	return token.SignedString(jwtSecret)
 }

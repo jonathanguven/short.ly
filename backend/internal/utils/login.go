@@ -34,7 +34,7 @@ func Authenticate(w http.ResponseWriter, username, password string) error {
 	}
 
 	// generate JWT token
-	token, err := GenerateJWT(user.ID)
+	token, err := GenerateJWT(user.ID, username)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"username": username,
