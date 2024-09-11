@@ -22,13 +22,13 @@ export default function URLShortenerForm() {
 
   const handleSubmit = async () => {
     if (!URL) {
-      setResponse("Error: URL is required.");
+      setResponse("URL is required.");
       setError(true);
       return;
     }
   
     try {
-      const serverURL = process.env.BASE_URL
+      const serverURL = process.env.NEXT_PUBLIC_BASE_URL
       const res = await fetch(`${serverURL}/shorten`, {
         method: "POST",
         headers: {
@@ -39,7 +39,8 @@ export default function URLShortenerForm() {
       });
   
       if (!res.ok) {
-        throw new Error("Failed to shorten URL");
+        const errorMessage = await res.text();
+        throw new Error(errorMessage);
       }
   
       const data = await res.json();
@@ -52,8 +53,12 @@ export default function URLShortenerForm() {
         setResponse("Error: Failed to retrieve shortened URL.");
         setError(true);
       }
-    } catch (error) {
-      setResponse("Error: Unable to shorten URL.");
+    } catch (err) {
+      if (err instanceof Error) {
+        setResponse(err.message);
+      } else {
+        setResponse("An unexpected error occurred.");
+      }
       setError(true);
     }
   };
