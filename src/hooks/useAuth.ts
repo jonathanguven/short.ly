@@ -30,7 +30,7 @@ export function useAuth() {
       try {
         const res = await fetch('/api/auth/status', {
           method: 'GET',
-          credentials: 'include'
+          credentials: 'same-origin'
         })
         const data = await res.json()
         setIsAuthenticated(data.isAuthenticated)
