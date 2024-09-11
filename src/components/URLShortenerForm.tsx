@@ -103,7 +103,7 @@ export default function URLShortenerForm() {
         <Textarea 
           value={response} 
           placeholder="Shortened URL will appear here, click to copy"
-          className={`resize-none h-28 justify-center pt-10 text-center text-3xl cursor-pointer ${error ? 'text-red-500' : 'text-black'}`} 
+          className={`resize-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 h-28 justify-center pt-10 text-center text-3xl cursor-pointer ${error ? 'text-red-500' : 'text-black'}`} 
           readOnly 
           onClick={handleCopy}
         />  
