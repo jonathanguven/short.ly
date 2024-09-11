@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 
+import { useAuth } from "@/hooks/useAuth";
+
 import { Copy, Check } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -10,6 +12,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 
 export default function URLShortenerForm() {
+  const { isAuthenticated } = useAuth();
+
   const [URL, setURL] = useState('');
   const [alias, setAlias] = useState('');
   const [response, setResponse] = useState('');
@@ -88,7 +92,8 @@ export default function URLShortenerForm() {
             <Label htmlFor="alias">Custom Alias</Label>
             <Input 
               id="alias" 
-              placeholder="Enter a custom alias (optional)" 
+              {...!isAuthenticated && { disabled: true }}
+              placeholder={isAuthenticated ? 'Enter a custom alias (optional)' : 'Enter a custom alias (must be logged in)'}
               value={alias} 
               onChange={(e) => setAlias(e.target.value)} 
             />
