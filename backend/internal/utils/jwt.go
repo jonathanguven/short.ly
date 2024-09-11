@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
+	log "github.com/sirupsen/logrus"
 )
 
 var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
@@ -22,6 +23,9 @@ func GenerateJWT(userID uint, username string) (string, error) {
 
 // set JWT token in HTTP-only cookie
 func SetCookie(w http.ResponseWriter, token string) {
+	log.WithFields(log.Fields{
+		"secure": os.Getenv("ENVIRONMENT"),
+	}).Infof("Environment: %s", os.Getenv("ENVIRONMENT"))
 	http.SetCookie(w, &http.Cookie{
 		Name:     "token",
 		Value:    token,
