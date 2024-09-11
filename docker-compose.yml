@@ -24,6 +24,7 @@ services:
       DB_URL: ${DB_URL}
       BASE_URL: ${BASE_URL}
       DOMAIN: ${DOMAIN}
+      ENVIRONMENT: ${ENVIRONMENT}
     command: ["./shortly"]
 
 volumes:

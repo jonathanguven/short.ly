@@ -26,6 +26,7 @@ func SetCookie(w http.ResponseWriter, token string) {
 		Name:     "token",
 		Value:    token,
 		HttpOnly: true,
+		Secure:   os.Getenv("ENVIRONMENT") == "production",
 		Expires:  time.Now().Add(time.Hour * 24 * 7),
 		Path:     "/",
 		SameSite: http.SameSiteLaxMode,
