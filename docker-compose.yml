@@ -25,6 +25,7 @@ services:
       BASE_URL: ${BASE_URL}
       DOMAIN: ${DOMAIN}
       ENVIRONMENT: ${ENVIRONMENT}
+      API_DOMAIN: ${API_DOMAIN}
     command: ["./shortly"]
 
 volumes:
