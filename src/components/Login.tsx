@@ -21,7 +21,7 @@ export default function Login() {
     setIsLoading(true)
 
     try {
-      const serverURL = process.env.BASE_URL
+      const serverURL = process.env.NEXT_PUBLIC_BASE_URL
       const response = await fetch(`${serverURL}/login`, {
         method: "POST",
         headers: {
