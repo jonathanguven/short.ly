@@ -16,17 +16,40 @@ export default function URLShortenerForm() {
   const [error, setError] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!URL) {
       setResponse("Error: URL is required.");
       setError(true);
       return;
     }
-
-    const shortLink = `https://shrink.lol/s/${alias || "generated-alias"}`;
-    setResponse(shortLink);
-    setError(false);
-    setCopied(false);
+  
+    try {
+      const res = await fetch("http://localhost:8080/shorten", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ URL, alias }),
+      });
+  
+      if (!res.ok) {
+        throw new Error("Failed to shorten URL");
+      }
+  
+      const data = await res.json();
+  
+      if (data.shortened_url) {
+        setResponse(data.shortened_url); 
+        setError(false);
+        setCopied(false);
+      } else {
+        setResponse("Error: Failed to retrieve shortened URL.");
+        setError(true);
+      }
+    } catch (error) {
+      setResponse("Error: Unable to shorten URL.");
+      setError(true);
+    }
   };
 
   const handleClear = () => {
