@@ -21,7 +21,8 @@ export default function Login() {
     setIsLoading(true)
 
     try {
-      const response = await fetch("http://localhost:8080/login", {
+      const serverURL = process.env.BASE_URL
+      const response = await fetch(`${serverURL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

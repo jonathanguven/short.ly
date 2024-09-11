@@ -28,7 +28,8 @@ export default function URLShortenerForm() {
     }
   
     try {
-      const res = await fetch("http://localhost:8080/shorten", {
+      const serverURL = process.env.BASE_URL
+      const res = await fetch(`${serverURL}/shorten`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -33,7 +33,6 @@ export function useAuth() {
         setIsAuthenticated(data.isAuthenticated)
         if (data.isAuthenticated && data.token) {
           const decoded = decodeToken(data.token);
-          console.log(decoded);
           setUser(decoded ? decoded.username : null); 
           setId(decoded ? decoded.user_id : null);
         }
