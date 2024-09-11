@@ -28,7 +28,10 @@ export function useAuth() {
   useEffect(() => {
     async function checkAuth() {
       try {
-        const res = await fetch('/api/auth/status')
+        const res = await fetch('/api/auth/status', {
+          method: 'GET',
+          credentials: 'include'
+        })
         const data = await res.json()
         setIsAuthenticated(data.isAuthenticated)
         if (data.isAuthenticated && data.token) {
