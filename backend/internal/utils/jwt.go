@@ -33,7 +33,7 @@ func SetCookie(w http.ResponseWriter, token string) {
 		Secure:   os.Getenv("ENVIRONMENT") == "production",
 		Expires:  time.Now().Add(time.Hour * 24 * 7),
 		Path:     "/",
-		SameSite: http.SameSiteLaxMode,
+		SameSite: http.SameSiteNoneMode,
 	})
 }
 
