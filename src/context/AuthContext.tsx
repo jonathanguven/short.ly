@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { UUID } from 'crypto';
@@ -7,6 +7,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   user: string | null;
   id: UUID | null;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,6 +24,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<string | null>(null);
   const [id, setId] = useState<UUID | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function checkAuth() {
@@ -37,6 +39,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setId(data.user_id);
       } catch (error) {
         console.error('Error checking auth status:', error);
+      } finally {
+        setLoading(false);
       }
     }
     checkAuth();
@@ -46,6 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isAuthenticated,
     user,
     id,
+    loading,
   };
 
   return (
