@@ -22,15 +22,24 @@ func GenerateJWT(userID uint, username string) (string, error) {
 
 // set JWT token in HTTP-only cookie
 func SetCookie(w http.ResponseWriter, token string) {
+	domain := os.Getenv("API_DOMAIN")
+	secure := os.Getenv("ENVIRONMENT") == "production"
+	sameSite := http.SameSiteNoneMode
+
+	if os.Getenv("ENVIRONMENT") != "production" {
+		domain = ""
+		secure = false
+		sameSite = http.SameSiteLaxMode
+	}
 	http.SetCookie(w, &http.Cookie{
 		Name:     "token",
 		Value:    token,
 		HttpOnly: true,
-		Domain:   os.Getenv("API_DOMAIN"),
-		Secure:   os.Getenv("ENVIRONMENT") == "production",
+		Domain:   domain,
+		Secure:   secure,
 		Expires:  time.Now().Add(time.Hour * 24 * 7),
 		Path:     "/",
-		SameSite: http.SameSiteNoneMode,
+		SameSite: sameSite,
 	})
 }
 
