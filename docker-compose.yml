@@ -26,6 +26,7 @@ services:
       DOMAIN: ${DOMAIN}
       ENVIRONMENT: ${ENVIRONMENT}
       API_DOMAIN: ${API_DOMAIN}
+      JWT_SECRET: ${JWT_SECRET}
     command: ["./shortly"]
 
 volumes:
