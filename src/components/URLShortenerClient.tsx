@@ -113,7 +113,7 @@ export default function URLShortenerClient({ isAuthenticated }: URLShortenerClie
       </Card>
       <div className="relative w-full">
         <div
-          className={`text-center flex justify-center items-center overflow-x-auto whitespace-nowrap shadow-sm text-3xl rounded-lg cursor-pointer ${error ? 'text-red-500' : 'text-black'} ${response ? 'text-zinc-700' : 'text-zinc-400'} bg-white border-2`} 
+          className={`text-center flex justify-center items-center overflow-x-auto whitespace-nowrap shadow-sm text-3xl rounded-lg cursor-pointer ${error ? 'text-red-500' : 'text-black'} ${response ? 'text-zinc-600' : 'text-zinc-400'} bg-white border-2`} 
           style={{
             fontSize: 'clamp(1rem, 3vw, 2rem)',
             height: 'clamp(4rem, 10vw, 6rem)',
@@ -128,9 +128,9 @@ export default function URLShortenerClient({ isAuthenticated }: URLShortenerClie
             onClick={handleCopy}
           >
             {copied ? (
-              <Check />
+              <Check color="#52525b"/>
             ) : (
-              <Copy />
+              <Copy color="#52525b"/>
             )}
           </div>
         )}
