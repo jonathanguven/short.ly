@@ -113,13 +113,16 @@ export default function URLShortenerClient({ isAuthenticated }: URLShortenerClie
         </CardFooter>
       </Card>
       <div className="relative w-full">
-        <Textarea 
-          value={response} 
-          placeholder="Shortened URL will appear here, click to copy"
-          className={`resize-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 h-28 justify-center pt-10 text-center text-3xl cursor-pointer ${error ? 'text-red-500' : 'text-black'}`} 
-          readOnly 
+        <div
+          className={`text-center flex justify-center items-center overflow-x-auto whitespace-nowrap shadow-sm text-3xl rounded-lg cursor-pointer ${error ? 'text-red-500' : 'text-black'} ${response ? 'text-zinc-700' : 'text-zinc-400'} bg-white border-2`} 
+          style={{
+            fontSize: 'clamp(1rem, 3vw, 2rem)',
+            height: 'clamp(4rem, 10vw, 6rem)',
+          }}
           onClick={handleCopy}
-        />  
+        >
+          {response || 'Shortened URL will appear here, click to copy'}
+        </div>
         {response && !error && (
           <div 
             className="absolute right-3 top-3 cursor-pointer flex items-center justify-center"
