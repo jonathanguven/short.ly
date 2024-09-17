@@ -32,9 +32,7 @@ export default function Login() {
       })
 
       if (response.ok) {
-        const data = await response.text()
-        console.log(data)
-        router.push("/") 
+        window.location.href = "/";
       } else {
         const errorText = await response.text()
         setError(errorText || "Login failed. Please try again.")
