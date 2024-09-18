@@ -17,7 +17,7 @@ export default async function URLs() {
   const urls = await getURLs();
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="container mx-auto py-10 lg:max-w-5xl">
       <DataTable columns={columns} data={urls} />
     </div>
   );

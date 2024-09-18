@@ -2,17 +2,10 @@
 
 import Link from "next/link";
 import { ColumnDef } from "@tanstack/react-table";
-// import { MoreHorizontal } from "lucide-react"
+import { ArrowUpDown } from "lucide-react"
 
-// import { Button } from "@/components/ui/button"
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuSeparator,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox";
 
 export type URL = {
   id: number;
@@ -26,13 +19,47 @@ export type URL = {
 
 export const columns: ColumnDef<URL>[] = [
   {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => {
+      const alias = row.original.alias;
+  
+      return (
+        <div>
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label={`Select row for alias ${alias}`}
+          />
+        </div>
+      );
+    },
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
     accessorKey: "Alias",
-    header: () => <div className="text-center">Alias</div>,
+    header: () => <div className="text-left ml-4">Alias</div>,
     cell: (info) => {
       const alias = info.getValue() as string
       return (
-        <div className="flex justify-center">
-          <div className="font-medium">{alias}</div>
+        <div className="ml-4">
+          <Link 
+            href={`${process.env.NEXT_PUBLIC_BASE_URL}/s/${alias}`} 
+            target="_blank" 
+            className="font-medium hover:underline"
+          >
+            {alias}
+          </Link>
         </div>
       )
     }
@@ -42,24 +69,52 @@ export const columns: ColumnDef<URL>[] = [
     header: () => <div className="text-left ml-4">URL</div>,
     cell: (info) => {
       const originalURL = info.getValue() as string
-      return <Link href={originalURL} target="_blank" className="text-center ml-4 font-medium hover:underline">{originalURL}</Link>
+      return (
+        <div
+          className="text-left ml-4 font-medium truncate md:max-w-64 lg:max-w-lg"
+        >
+          {originalURL}
+        </div>
+      );
     },
   },
   {
     accessorKey: "ClickCount",
-    header: () => <div className="text-center font-medium">Click Count</div>,
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="font-medium text-normal"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Click Count
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
     cell: (info) => {
       const count = info.getValue() as number
       return (
-        <div className="flex justify-center">
-          <div className="font-medium">{count}</div>
+        <div>
+          <div className="font-medium ml-14">{count}</div>
         </div>
       )
     },
   },
   {
     accessorKey: "CreatedAt",
-    header: () => <div className="text-right">Date Created</div>,
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="font-medium text-normal"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Date Created
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
     cell: info => {
       const value = info.getValue() as string;
       const date = new Date(value);
@@ -69,7 +124,7 @@ export const columns: ColumnDef<URL>[] = [
         year: 'numeric',
       });
 
-      return <div className="text-right font-medium">{formatted}</div>
+      return <div className="text-left font-medium ml-8">{formatted}</div>
     },
   },
 ]
