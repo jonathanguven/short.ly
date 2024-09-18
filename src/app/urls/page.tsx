@@ -8,7 +8,7 @@ import { getURLs } from "@/lib/getURLs"
 
 export default async function URLs() {
   const token = cookies().get('token')?.value;
-  const { isAuthenticated, user } = validateToken(token);
+  const { isAuthenticated } = validateToken(token);
 
   if (!isAuthenticated) {
     redirect('/login')

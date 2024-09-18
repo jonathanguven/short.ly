@@ -5,7 +5,7 @@ import LogoutButton from "./LogoutButton";
 
 export const Header = () => {
   const token = cookies().get('token')?.value;
-  const { isAuthenticated, user } = validateToken(token);
+  const { isAuthenticated } = validateToken(token);
 
   return (
     <header className="bg-white dark:bg-gray-800 shadow">
