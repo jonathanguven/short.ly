@@ -30,7 +30,7 @@ export const Header = () => {
                 ) : (
                   <>
                     <Link
-                      href={`/urls/${user}`}
+                      href='/urls'
                       className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
                     >
                       My URLs
