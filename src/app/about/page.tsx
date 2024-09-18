@@ -60,7 +60,7 @@ export default function About() {
           structure, and technologies used in the project.
         </p>
 
-        <Link href="https://github.com/jonathanguven/shrink" className="hover:underline">
+        <Link href="https://github.com/jonathanguven/shrink" target="_blank" className="hover:underline">
           Check out the GitHub Repository
         </Link>
 
