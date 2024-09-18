@@ -12,7 +12,7 @@ Shortly is a simple, yet powerful URL shortening service built with **Next.js**,
 
 ## Tech Stack
 
-- **Frontend**: Next.js, Shadcn
+- **Frontend**: React, Shadcn
 - **Backend**: Golang
 - **Database**: PostgreSQL
 - **Monitoring**: Prometheus & Grafana
