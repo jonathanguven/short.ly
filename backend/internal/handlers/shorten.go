@@ -8,6 +8,7 @@ import (
 	"shortly/internal/middlewares"
 	"shortly/internal/models"
 	"shortly/internal/utils"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -41,6 +42,19 @@ func HandleShorten(w http.ResponseWriter, r *http.Request) {
 			"remote": r.RemoteAddr,
 		}).Warn("Invalid input for URL shortening")
 		http.Error(w, "Invalid input", http.StatusBadRequest)
+		return
+	}
+
+	// do not allow domain url to be itself
+	reqURL := strings.TrimSuffix(req.URL, "/")
+	baseDomain := "https://shrink.lol"
+	if strings.HasPrefix(reqURL, baseDomain) {
+		log.WithFields(log.Fields{
+			"attempted_url": req.URL,
+			"userID":        userID,
+			"remote":        r.RemoteAddr,
+		}).Warn("Attempted to shorten the base domain URL")
+		http.Error(w, "That URL has been blocked", http.StatusBadRequest)
 		return
 	}
 
