@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { validateToken } from "@/lib/auth";
+import LogoutButton from "./LogoutButton";
 
 export const Header = () => {
   const token = cookies().get('token')?.value;
@@ -15,24 +16,27 @@ export const Header = () => {
           </Link>
 
           <nav>
-            <ul className="flex space-x-4">
+            <ul className="flex items-center space-x-4">
               <li>
                 <Link href="/about" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
                   About
                 </Link>
               </li>
-              <li>
+              <li className="flex place-items-center gap-4 pl-4">
                 {!isAuthenticated ? (
                   <Link href="/login" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
                     Login
                   </Link>
                 ) : (
-                  <Link
-                    href={`/urls/${user}`}
-                    className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
-                  >
-                    My URLs
-                  </Link>
+                  <>
+                    <Link
+                      href={`/urls/${user}`}
+                      className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                    >
+                      My URLs
+                    </Link>
+                    <LogoutButton />
+                  </>
                 )}
               </li>
             </ul>

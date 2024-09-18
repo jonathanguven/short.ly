@@ -108,7 +108,7 @@ export default function URLShortenerClient({ isAuthenticated }: URLShortenerClie
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button variant="outline" onClick={handleClear}>Clear</Button>
-          <Button onClick={handleSubmit}>Shrink</Button>
+          <Button onClick={handleSubmit} type="submit">Shrink</Button>
         </CardFooter>
       </Card>
       <div className="relative w-full">

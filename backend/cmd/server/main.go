@@ -41,6 +41,7 @@ func main() {
 	r.Handle("/urls/{alias}", middlewares.Authenticate(http.HandlerFunc(handlers.HandleDeleteURL))).Methods("DELETE")
 	r.HandleFunc("/s/{alias}", handlers.HandleRedirect).Methods("GET")
 	r.HandleFunc("/login", handlers.HandleLogin).Methods("POST")
+	r.HandleFunc("/logout", handlers.HandleLogout).Methods("POST")
 	r.HandleFunc("/create-account", handlers.HandleCreateUser).Methods("POST")
 	r.Handle("/urls", middlewares.Authenticate(http.HandlerFunc(handlers.HandleListURLs))).Methods("GET")
 	r.Handle("/metrics", promhttp.Handler())
