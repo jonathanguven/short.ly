@@ -21,6 +21,7 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 	var req struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
+		Confirm  string `json:"confirm"`
 	}
 
 	log.WithFields(log.Fields{
@@ -48,6 +49,17 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 			"remote":   r.RemoteAddr,
 		}).Warn("Attempted to create account with existing username")
 		http.Error(w, "Username already exists", http.StatusBadRequest)
+		return
+	}
+
+	// check if password and confirmation match
+	if req.Password != req.Confirm {
+		log.WithFields(log.Fields{
+			"username": req.Username,
+			"remote":   r.RemoteAddr,
+		}).Warn("Password and confirmation do not match")
+		metrics.TotalErrors.WithLabelValues(r.Method, r.URL.Path, http.StatusText(http.StatusBadRequest)).Inc()
+		http.Error(w, "Passwords do not match", http.StatusBadRequest)
 		return
 	}
 
