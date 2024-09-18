@@ -1,11 +1,12 @@
 "use client"
 
-import React from "react"
+import React, { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useToast } from "@/hooks/use-toast"
 
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, Trash2 } from "lucide-react"
 
 import {
   DropdownMenu,
@@ -42,6 +43,16 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
+type URL = {
+  ID: number;
+  Alias: string;
+  Link: string;
+  URL: string;
+  CreatedAt: string;
+  ExpiresAt?: string | null;
+  ClickCount: number;
+}
+
 export function DataTable<TData, TValue>({
   columns,
   data,
@@ -53,9 +64,11 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+  const [tableData, setTableData] = useState(data)
+  const { toast } = useToast()
   
   const table = useReactTable({
-    data,
+    data: tableData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -73,6 +86,49 @@ export function DataTable<TData, TValue>({
     },
   })
 
+
+  const deleteSelected = async () => {
+    const selectedRows = table.getSelectedRowModel().rows;
+    const aliases = selectedRows.map((row) => (row.original as URL).Alias);
+
+    if (aliases.length > 0) {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/urls/delete`, {
+          method: 'DELETE',
+          credentials: 'include',
+          body: JSON.stringify({ 
+            "urls": aliases 
+          }),
+        });
+
+        if (response.ok) {
+          const updatedData = tableData.filter(row => !aliases.includes((row as URL).Alias));
+          setTableData(updatedData);
+          setRowSelection({});
+          toast({
+            title: "Done!",
+            description: `Succesfully deleted ${aliases.length} URLs!`,
+          })
+        } else {
+          toast({
+            title: "Error!",
+            description: "Failed to delete selected URLs!",
+          })
+        }
+      } catch (error) {
+        toast({
+          title: "Error!",
+          description: "Failed to delete selected URLs!",
+        })
+      }
+    } else {
+      toast({
+        title: "Error!",
+        description: "No Rows Selected!",
+      })
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center py-4">
@@ -84,32 +140,35 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-md"
         />
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="ml-auto">
-            Columns <ChevronDown className="ml-2 h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {table
-            .getAllColumns()
-            .filter((column) => column.getCanHide())
-            .map((column) => {
-              return (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) =>
-                    column.toggleVisibility(!!value)
-                  }
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              )
-            })}
-        </DropdownMenuContent>
-      </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Columns <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                )
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Button className="ml-4" onClick={deleteSelected}>
+          <Trash2 size={24}/>
+        </Button>
       </div>
       <div className="rounded-md border">
         <Table className="">
