@@ -170,8 +170,8 @@ export function DataTable<TData, TValue>({
           <Trash2 size={24}/>
         </Button>
       </div>
-      <div className="rounded-md border">
-        <Table className="">
+      <div className="rounded-md border bg-white">
+        <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
