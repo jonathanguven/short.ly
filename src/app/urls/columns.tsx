@@ -87,7 +87,7 @@ export const columns: ColumnDef<URL>[] = [
           className="font-medium text-normal"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Click Count
+          Clicks
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
@@ -96,7 +96,7 @@ export const columns: ColumnDef<URL>[] = [
       const count = info.getValue() as number
       return (
         <div>
-          <div className="font-medium ml-14">{count}</div>
+          <div className="font-medium ml-10">{count}</div>
         </div>
       )
     },
