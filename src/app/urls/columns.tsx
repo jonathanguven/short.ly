@@ -2,10 +2,18 @@
 
 import Link from "next/link";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export type URL = {
   id: number;
@@ -71,7 +79,7 @@ export const columns: ColumnDef<URL>[] = [
       const originalURL = info.getValue() as string
       return (
         <div
-          className="text-left ml-4 font-medium truncate md:max-w-64 lg:max-w-lg"
+          className="text-left ml-4 font-medium truncate md:max-w-56 lg:max-w-md"
         >
           {originalURL}
         </div>
@@ -125,6 +133,27 @@ export const columns: ColumnDef<URL>[] = [
       });
 
       return <div className="text-left font-medium ml-8">{formatted}</div>
+    },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const payment = row.original
+ 
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>Edit URL</DropdownMenuItem>
+            <DropdownMenuItem>Edit Alias</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
     },
   },
 ]

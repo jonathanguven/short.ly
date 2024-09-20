@@ -13,13 +13,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// update existing url alias
+// update existing url alias and/or URL
 func HandleUpdateURL(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	metrics.TotalRequests.WithLabelValues(r.Method, r.URL.Path).Inc()
 
 	var req struct {
-		NewAlias string `json:"new_alias"`
+		NewAlias string `json:"new_alias,omitempty"`
+		NewURL   string `json:"new_url,omitempty"`
 	}
 
 	vars := mux.Vars(r)
@@ -71,32 +72,41 @@ func HandleUpdateURL(w http.ResponseWriter, r *http.Request) {
 		log.WithFields(log.Fields{
 			"error":  err.Error(),
 			"remote": r.RemoteAddr,
-		}).Warn("Invalid input for alias update")
+		}).Warn("Invalid input for alias or URL update")
 		metrics.TotalErrors.WithLabelValues(r.Method, r.URL.Path, http.StatusText(http.StatusBadRequest)).Inc()
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 		return
 	}
 
-	// update alias
-	url.Alias = req.NewAlias
+	// update alias if new alias is provided
+	if req.NewAlias != "" {
+		url.Alias = req.NewAlias
+	}
+
+	// update URL if new URL is provided
+	if req.NewURL != "" {
+		url.URL = req.NewURL
+	}
+
 	if err := utils.SaveURL(url); err != nil {
 		log.WithFields(log.Fields{
 			"alias":  alias,
 			"error":  err.Error(),
 			"remote": r.RemoteAddr,
-		}).Error("Failed to update URL alias in database")
+		}).Error("Failed to update URL in database")
 		metrics.TotalErrors.WithLabelValues(r.Method, r.URL.Path, "DatabaseSaveFailed").Inc()
-		http.Error(w, "Failed to update URL alias", http.StatusInternalServerError)
+		http.Error(w, "Failed to update URL", http.StatusInternalServerError)
 		return
 	}
 
 	log.WithFields(log.Fields{
 		"new_alias": url.Alias,
+		"new_url":   url.URL,
 		"userID":    url.UserID,
 		"remote":    r.RemoteAddr,
-	}).Info("URL alias updated successfully")
+	}).Info("URL updated successfully")
 
 	metrics.RequestDuration.WithLabelValues(r.Method, r.URL.Path).Observe(time.Since(start).Seconds())
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("URL alias updated successfully"))
+	w.Write([]byte("URL updated successfully"))
 }
