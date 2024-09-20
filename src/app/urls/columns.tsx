@@ -217,6 +217,7 @@ export const columns: ColumnDef<URL>[] = [
                 <Input
                   id="alias"
                   value={alias}
+                  maxLength={8}
                   onChange={(e) => setAlias(e.target.value)}
                   className="col-span-3"
                 />
