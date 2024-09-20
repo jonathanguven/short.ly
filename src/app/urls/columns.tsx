@@ -68,7 +68,7 @@ export const columns: ColumnDef<URL>[] = [
       return (
         <div className="ml-4">
           <Link 
-            href={`${process.env.NEXT_PUBLIC_BASE_URL}/s/${alias}`} 
+            href={`${process.env.DOMAIN}/s/${alias}`} 
             target="_blank" 
             className="font-medium hover:underline"
           >
