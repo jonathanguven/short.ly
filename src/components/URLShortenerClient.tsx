@@ -101,6 +101,7 @@ export default function URLShortenerClient({ isAuthenticated }: URLShortenerClie
               {...!isAuthenticated && { disabled: true }}
               placeholder={isAuthenticated ? 'Enter a custom alias (optional)' : 'Enter a custom alias (must be logged in)'}
               value={alias} 
+              maxLength={8}
               className="text-md"
               onChange={(e) => setAlias(e.target.value)} 
             />

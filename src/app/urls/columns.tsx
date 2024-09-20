@@ -85,7 +85,7 @@ export const columns: ColumnDef<URL>[] = [
       const originalURL = info.getValue() as string
       return (
         <div
-          className="text-left ml-4 font-medium truncate md:max-w-56 lg:max-w-md"
+          className="text-left ml-4 font-medium truncate md:max-w-52 lg:max-w-md"
         >
           {originalURL}
         </div>
