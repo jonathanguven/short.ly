@@ -38,11 +38,6 @@ import {
 } from "@/components/ui/table"
 
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-}
-
 type URL = {
   ID: number;
   Alias: string;
@@ -53,9 +48,16 @@ type URL = {
   ClickCount: number;
 }
 
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[]
+  updateRow: (updatedRow: TData) => void
+}
+
 export function DataTable<TData, TValue>({
   columns,
   data,
+  updateRow
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -66,10 +68,23 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = React.useState({})
   const [tableData, setTableData] = useState(data)
   const { toast } = useToast()
+
+  const columnsWithUpdate = columns.map((column) => {
+    if (column.id === "actions" && typeof column.cell === "function") {
+      return {
+        ...column,
+        cell: (info: any) => {
+          const cellFunction = column.cell as (info: any) => React.ReactNode;
+          return cellFunction({ ...info, updateRow });
+        },
+      };
+    }
+    return column;
+  });
   
   const table = useReactTable({
     data: tableData,
-    columns,
+    columns: columnsWithUpdate,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
@@ -83,6 +98,14 @@ export function DataTable<TData, TValue>({
       columnFilters,
       columnVisibility,
       rowSelection,
+    },
+    meta: {
+      updateRow: (updatedRow: TData) => {
+        updateRow(updatedRow);
+        setTableData((prevData) =>
+          prevData.map((row) => ((row as any).ID === (updatedRow as any).ID ? updatedRow : row))
+        );
+      },
     },
   })
 

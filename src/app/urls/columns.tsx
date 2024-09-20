@@ -1,7 +1,7 @@
 'use client'
 import React from "react";
 import Link from "next/link";
-import { ColumnDef } from "@tanstack/react-table";
+import { CellContext, ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { useToast } from "@/hooks/use-toast";
 
@@ -143,7 +143,7 @@ export const columns: ColumnDef<URL>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell: ({ row, table }: CellContext<URL, unknown>) => {
       const originalAlias = row.original.Alias;
       const originalURL = row.original.URL;
       const [alias, setAlias] = React.useState(originalAlias);
@@ -174,6 +174,14 @@ export const columns: ColumnDef<URL>[] = [
               description: "URL updated successfully.",
             });
             setIsOpen(false);
+            const updateRow = (table.options.meta as any)?.updateRow;
+            if (updateRow) {
+              updateRow({
+                ...row.original,
+                Alias: alias,
+                URL: url,
+              });
+            }
           } else {
             throw new Error("Failed to update URL.");
           }
