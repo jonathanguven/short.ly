@@ -29,12 +29,12 @@ export const Header = () => {
                   </Link>
                 ) : (
                   <>
-                    <Link
+                    <a
                       href='/urls'
                       className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
                     >
                       My URLs
-                    </Link>
+                    </a>
                     <LogoutButton />
                   </>
                 )}
