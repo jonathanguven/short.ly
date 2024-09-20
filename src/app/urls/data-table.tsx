@@ -86,7 +86,6 @@ export function DataTable<TData, TValue>({
     },
   })
 
-
   const deleteSelected = async () => {
     const selectedRows = table.getSelectedRowModel().rows;
     const aliases = selectedRows.map((row) => (row.original as URL).Alias);
