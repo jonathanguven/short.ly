@@ -26,3 +26,7 @@ Shortly is a simple, yet powerful URL shortening service built with **Next.js**,
    - When a user visits the shortened URL, the system retrieves the original URL from the database and redirects the user to it.
 3. **Analytics**:
    - Each time a shortened URL is accessed, the click count is incremented, and this data can be viewed by the URL's creator.
+
+## Previews
+
+![alt text](image.png)
