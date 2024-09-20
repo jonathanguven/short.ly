@@ -1,8 +1,18 @@
 "use client"; 
 
+import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
-const LogoutButton = () => {
+interface LogoutButtonProps {
+  user: string | null;
+}
+
+const LogoutButton = ({ user }: LogoutButtonProps) => {
   const logout = async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/logout`, {
@@ -24,13 +34,24 @@ const LogoutButton = () => {
   };
 
   return (
-    <Button
-      onClick={logout}
-      variant={"ghost"}
-      className="text-base text-gray-600 font-normal"
-    >
-      Logout
-    </Button>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="ml-auto font-normal text-base">
+            {user} <ChevronDown className="ml-2 h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <Button
+            onClick={logout}
+            variant={"ghost"}
+            className="w-full text-base text-gray-600 font-normal"
+          >
+            Logout
+          </Button>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 };
 
