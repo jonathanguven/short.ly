@@ -21,7 +21,7 @@ import {
 import { Label } from "@/components/ui/label"
 
 
-type URL = {
+export type URL = {
   ID: number;
   Alias: string;
   Link: string;
